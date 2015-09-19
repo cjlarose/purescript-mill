@@ -63,9 +63,11 @@ instance uInt128Bytes :: Bytes UInt128 where
 
 addLists :: List Int -> List Int -> (Tuple Boolean (List Int))
 addLists xs ys = (foldr f (Tuple false Nil) (zip xs ys)) where
-  f (Tuple x y) (Tuple carry prevSum) = (Tuple ((sum / 256) == 1) ((sum `mod` 256) : prevSum)) where
+  f (Tuple x y) (Tuple carry prevSum) = (Tuple newCarry newSum) where
     c = (if carry then 1 else 0)
     sum = x + y + c
+    newSum = (sum `mod` 256) : prevSum
+    newCarry = (sum / 256) == 1
 
 -- addu :: UInt32 -> UInt32 -> UInt32
 -- addu (UInt32 xs) (UInt32 ys) = case addLists xs ys of
