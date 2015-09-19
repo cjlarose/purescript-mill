@@ -24,7 +24,7 @@ class Bytes a where
   width :: Int
 
 addWithCarry :: forall b. (Bytes b) => b -> b -> (Tuple Boolean (List Int))
-addWithCarry a b = addLists' (toBytes a) (toBytes b)
+addWithCarry a b = addLists (toBytes a) (toBytes b)
 
 instance uInt8Bytes :: Bytes UInt8 where
   toBytes (UInt8 a) = pure a
@@ -60,18 +60,12 @@ instance uInt128Bytes :: Bytes UInt128 where
 --   show (NaR x) = "NaR " ++ show x
 --   show (Result x) = "Result " ++ show x
 -- 
-addLists :: List Int -> List Int -> List Int
-addLists xs ys = (foldr f Nil (zip xs ys)) where
-  f (Tuple x y) Nil = ((x + y) / 256) : ((x + y) `mod` 256) : Nil
-  f (Tuple x y) (Cons prevCarry rest) = let sum = x + y + prevCarry in
-    (sum / 256) : (sum `mod` 256) : rest
 
-addLists' :: List Int -> List Int -> (Tuple Boolean (List Int))
-addLists' xs ys = (foldr f (Tuple false Nil) (zip xs ys)) where
+addLists :: List Int -> List Int -> (Tuple Boolean (List Int))
+addLists xs ys = (foldr f (Tuple false Nil) (zip xs ys)) where
   f (Tuple x y) (Tuple carry prevSum) = (Tuple ((sum / 256) == 1) ((sum `mod` 256) : prevSum)) where
     c = (if carry then 1 else 0)
     sum = x + y + c
-    
 
 -- addu :: UInt32 -> UInt32 -> UInt32
 -- addu (UInt32 xs) (UInt32 ys) = case addLists xs ys of
