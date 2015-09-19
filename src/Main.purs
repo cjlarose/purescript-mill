@@ -73,8 +73,8 @@ instance uInt128Show :: Show UInt128 where
 
 
 instance uInt8Bounded :: Bounded UInt8 where
-  top = fromInt 255
-  bottom = fromInt 0
+  top = UInt8 255
+  bottom = UInt8 0
 
 instance uInt16Bounded :: Bounded UInt16 where
   top = UInt16 (top UInt8) (top UInt8)
@@ -91,6 +91,50 @@ instance uInt64Bounded :: Bounded UInt64 where
 instance uInt128Bounded :: Bounded UInt128 where
   top = UInt128 (top UInt128) (top UInt128)
   bottom = UInt128 (bottom UInt128) (bottom UInt128)
+
+
+instance uInt8Eq :: Eq UInt8 where
+  eq (UInt8 a) (UInt8 b) = a == b
+
+instance uInt16Eq :: Eq UInt16 where
+  eq (UInt16 a b) (UInt16 c d) = a == c && b == d
+
+instance uInt32Eq :: Eq UInt32 where
+  eq (UInt32 a b) (UInt32 c d) = a == c && b == d
+
+instance uInt64Eq :: Eq UInt64 where
+  eq (UInt64 a b) (UInt64 c d) = a == c && b == d
+
+instance uInt128Eq :: Eq UInt128 where
+  eq (UInt128 a b) (UInt128 c d) = a == c && b == d
+
+
+instance uInt8Ord :: Ord UInt8 where
+  compare (UInt8 a) (UInt8 b) = (compare a b)
+
+instance uInt16Ord :: Ord UInt16 where
+  compare (UInt16 a b) (UInt16 c d) = case compare a b of
+                                           LT -> LT
+                                           GT -> GT
+                                           EQ -> compare b d
+
+instance uInt32Ord :: Ord UInt32 where
+  compare (UInt32 a b) (UInt32 c d) = case compare a b of
+                                           LT -> LT
+                                           GT -> GT
+                                           EQ -> compare b d
+
+instance uInt64Ord :: Ord UInt64 where
+  compare (UInt64 a b) (UInt64 c d) = case compare a b of
+                                           LT -> LT
+                                           GT -> GT
+                                           EQ -> compare b d
+
+instance uInt128Ord :: Ord UInt128 where
+  compare (UInt128 a b) (UInt128 c d) = case compare a b of
+                                           LT -> LT
+                                           GT -> GT
+                                           EQ -> compare b d
 
 -- data UInt = UInt8 | UInt16 | UInt32 | UInt64 | UInt128
 
