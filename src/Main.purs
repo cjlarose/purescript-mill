@@ -26,6 +26,11 @@ instance uInt8Eq :: Eq UInt8 where
 fromInt :: Int -> UInt8
 fromInt x = UInt8 (x `mod` 256)
 
+class Bytes a where
+  toBytes :: a -> List UInt8
+
+instance uInt8Bytes :: Bytes UInt8 where
+  toBytes = pure
 
 data LargeKey a b = LargeKey a b
 
@@ -52,6 +57,9 @@ instance largeKeyOrd :: (Ord a, Ord b) => Ord (LargeKey a b) where
                                            EQ -> compare b d
 
 instance largeKeyBoundedOrd :: (BoundedOrd a, BoundedOrd b) => BoundedOrd (LargeKey a b) where
+
+instance largeKeyBytes :: (Bytes a, Bytes b) => Bytes (LargeKey a b) where
+  toBytes (LargeKey a b) = (toBytes a) ++ (toBytes b)
 
 type UInt16 = LargeKey UInt8 UInt8
 type UInt32 = LargeKey UInt16 UInt16
@@ -82,6 +90,7 @@ main = do
   log (show $ (top :: UInt16))
   log (show $ (top :: UInt32))
   log (show $ (compare (bottom :: UInt32) (top :: UInt32)))
+  log (show $ (toBytes (top :: UInt32)))
   -- log (show $ (top :: UInt32))
   -- log (show $ (top :: UInt64))
   -- log (show $ (top :: UInt128))
