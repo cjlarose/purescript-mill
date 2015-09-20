@@ -15,8 +15,17 @@ instance uInt8Bounded :: Bounded UInt8 where
   top = UInt8 255
   bottom = UInt8 0
 
+instance uInt8Ord :: Ord UInt8 where
+  compare (UInt8 a) (UInt8 b) = compare a b
+
+instance uInt8Eq :: Eq UInt8 where
+  eq (UInt8 a) (UInt8 b) = eq a b
+
+-- instance uInt8BoundedOrd :: BoundedOrd UInt8 where
+
 fromInt :: Int -> UInt8
 fromInt x = UInt8 (x `mod` 256)
+
 
 data LargeKey a b = LargeKey a b
 
@@ -72,6 +81,7 @@ main = do
   log (show $ (top :: UInt8))
   log (show $ (top :: UInt16))
   log (show $ (top :: UInt32))
+  log (show $ (compare (bottom :: UInt32) (top :: UInt32)))
   -- log (show $ (top :: UInt32))
   -- log (show $ (top :: UInt64))
   -- log (show $ (top :: UInt128))
