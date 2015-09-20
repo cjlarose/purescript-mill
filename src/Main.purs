@@ -5,11 +5,12 @@ import Prelude
 import Data.Foldable (foldr)
 import Data.List
 import Data.Tuple
+import Data.BigInt
 
 data UInt8 = UInt8 Int
 
-fromInt :: Int -> UInt8
-fromInt x = UInt8 (x `mod` 256)
+intToByte :: Int -> UInt8
+intToByte x = UInt8 (x `mod` 256)
 
 clamp :: Int -> UInt8
 clamp x = UInt8 val where
@@ -41,10 +42,10 @@ runSat :: forall a. SaturatingArithmetic a -> a
 runSat (SaturatingArithmetic a) = a
 
 instance modularArithmeticUInt8Semiring :: Semiring (ModularArithmetic UInt8) where
-  add (ModularArithmetic (UInt8 a)) (ModularArithmetic (UInt8 b)) = ModularArithmetic $ fromInt $ a + b
-  zero = ModularArithmetic $ fromInt 0
-  mul (ModularArithmetic (UInt8 a)) (ModularArithmetic (UInt8 b)) = ModularArithmetic $ fromInt $ a * b
-  one = ModularArithmetic $ fromInt 1
+  add (ModularArithmetic (UInt8 a)) (ModularArithmetic (UInt8 b)) = ModularArithmetic $ intToByte $ a + b
+  zero = ModularArithmetic $ intToByte 0
+  mul (ModularArithmetic (UInt8 a)) (ModularArithmetic (UInt8 b)) = ModularArithmetic $ intToByte $ a * b
+  one = ModularArithmetic $ intToByte 1
 
 instance saturatingArithmeticUInt8Semiring :: Semiring (SaturatingArithmetic UInt8) where
   add (SaturatingArithmetic (UInt8 a)) (SaturatingArithmetic (UInt8 b)) = SaturatingArithmetic $ clamp $ a + b
@@ -112,13 +113,13 @@ main = do
   -- log (show $ addu 5 6)
   -- log (show $ addLists (toList [1, 2, 3]) (toList [7, 8, 9]))
   log "hello world"
-  log (show $ fromInt 400)
+  log (show $ intToByte 400)
   log (show $ (top :: UInt8))
   log (show $ (top :: UInt16))
   log (show $ (top :: UInt32))
   log (show $ (compare (bottom :: UInt32) (top :: UInt32)))
   log (show $ (toBytes (top :: UInt32)))
-  log (show <<< runMod $ (ModularArithmetic (fromInt 200) * ModularArithmetic (fromInt 50)))
+  log (show <<< runMod $ (ModularArithmetic (intToByte 200) * ModularArithmetic (intToByte 50)))
   log (show <<< runSat $ (SaturatingArithmetic (clamp 127) * SaturatingArithmetic (clamp 2)))
   log (show <<< runSat $ (SaturatingArithmetic (clamp 200) * SaturatingArithmetic (clamp 2)))
   -- log (show $ (top :: UInt32))

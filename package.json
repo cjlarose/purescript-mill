@@ -1,0 +1,25 @@
+{
+  "name": "psc-mill",
+  "version": "1.0.0",
+  "description": "",
+  "main": "output/Main/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cjlarose/mill-psc.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cjlarose/mill-psc/issues"
+  },
+  "homepage": "https://github.com/cjlarose/mill-psc",
+  "dependencies": {
+    "big-integer": "^1.5.6"
+  }
+}
