@@ -5,6 +5,7 @@ import Prelude
 import Data.Foldable (foldr, foldl)
 import Data.List
 import Data.Tuple
+import Data.Int (floor)
 import qualified Data.BigInt as BigInt
 
 data UInt8 = UInt8 Int
@@ -56,6 +57,7 @@ instance saturatingArithmeticUInt8Semiring :: Semiring (SaturatingArithmetic UIn
 
 class Bytes a where
   toBytes :: a -> List UInt8
+  fromBigInt :: BigInt.BigInt -> a
 
 bytesToBigInt :: forall b. (Bytes b) => b -> BigInt.BigInt
 bytesToBigInt x = foldl f (BigInt.fromInt 0) (toBytes x) where
@@ -71,6 +73,7 @@ splitBigInt byteWidth x = (Tuple hi lo) where
 
 instance uInt8Bytes :: Bytes UInt8 where
   toBytes = pure
+  fromBigInt x = UInt8 <<< floor <<< BigInt.toNumber $ x `mod` (BigInt.fromInt 256)
 
 data LargeKey a b = LargeKey a b
 
@@ -98,8 +101,12 @@ instance largeKeyOrd :: (Ord a, Ord b) => Ord (LargeKey a b) where
 
 instance largeKeyBoundedOrd :: (BoundedOrd a, BoundedOrd b) => BoundedOrd (LargeKey a b) where
 
-instance largeKeyBytes :: (Bytes a, Bytes b) => Bytes (LargeKey a b) where
+instance largeKeyBytes :: (Bytes a, Bytes b, Bounded a, Bounded b) => Bytes (LargeKey a b) where
   toBytes (LargeKey a b) = (toBytes a) ++ (toBytes b)
+  fromBigInt x = (LargeKey hi lo) where
+    shiftAmount = bytesToBigInt (top :: b) + BigInt.fromInt 1
+    hi = fromBigInt $ x `div` shiftAmount
+    lo = fromBigInt $ x `mod` shiftAmount
 
 type UInt16 = LargeKey UInt8 UInt8
 type UInt32 = LargeKey UInt16 UInt16
@@ -143,6 +150,8 @@ main = do
   log (show <<< splitBigInt 1 <<< bytesToBigInt $ (top :: UInt16))
   log (show <<< splitBigInt 2 <<< bytesToBigInt $ (top :: UInt32))
   log (show <<< splitBigInt 4 <<< bytesToBigInt $ (top :: UInt64))
+  log (show <<< bytesToBigInt $ (top :: UInt32))
+  log (show $ (fromBigInt <<< bytesToBigInt $ (top :: UInt16)) :: UInt32)
   -- log (show $ (top :: UInt32))
   -- log (show $ (top :: UInt64))
   -- log (show $ (top :: UInt128))
