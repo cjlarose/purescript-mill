@@ -8,6 +8,9 @@ import Data.Tuple
 
 data UInt8 = UInt8 Int
 
+fromInt :: Int -> UInt8
+fromInt x = UInt8 (x `mod` 256)
+
 instance uInt8Show :: Show UInt8 where
   show (UInt8 x) = "UInt8 " ++ show x
 
@@ -23,8 +26,17 @@ instance uInt8Eq :: Eq UInt8 where
 
 -- instance uInt8BoundedOrd :: BoundedOrd UInt8 where
 
-fromInt :: Int -> UInt8
-fromInt x = UInt8 (x `mod` 256)
+newtype ModularArithmetic a = ModularArithmetic a
+
+getOperand :: forall a. ModularArithmetic a -> a
+getOperand (ModularArithmetic a) = a
+
+instance modularArithmeticUInt8Semiring :: Semiring (ModularArithmetic UInt8) where
+  add (ModularArithmetic (UInt8 a)) (ModularArithmetic (UInt8 b)) = ModularArithmetic $ fromInt $ a + b
+  zero = ModularArithmetic $ fromInt 0
+  mul (ModularArithmetic (UInt8 a)) (ModularArithmetic (UInt8 b)) = ModularArithmetic $ fromInt $ a * b
+  one = ModularArithmetic $ fromInt 1
+
 
 class Bytes a where
   toBytes :: a -> List UInt8
@@ -91,6 +103,7 @@ main = do
   log (show $ (top :: UInt32))
   log (show $ (compare (bottom :: UInt32) (top :: UInt32)))
   log (show $ (toBytes (top :: UInt32)))
+  log (show <<< getOperand $ (ModularArithmetic (fromInt 200) * ModularArithmetic (fromInt 50)))
   -- log (show $ (top :: UInt32))
   -- log (show $ (top :: UInt64))
   -- log (show $ (top :: UInt128))
