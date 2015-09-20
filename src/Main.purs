@@ -11,6 +11,10 @@ data UInt8 = UInt8 Int
 fromInt :: Int -> UInt8
 fromInt x = UInt8 (x `mod` 256)
 
+clamp :: Int -> UInt8
+clamp x = UInt8 val where
+  val = if x > 255 then 255 else x
+
 instance uInt8Show :: Show UInt8 where
   show (UInt8 x) = "UInt8 " ++ show x
 
@@ -28,14 +32,25 @@ instance uInt8Eq :: Eq UInt8 where
 
 newtype ModularArithmetic a = ModularArithmetic a
 
-getOperand :: forall a. ModularArithmetic a -> a
-getOperand (ModularArithmetic a) = a
+runMod :: forall a. ModularArithmetic a -> a
+runMod (ModularArithmetic a) = a
+
+newtype SaturatingArithmetic a = SaturatingArithmetic a
+
+runSat :: forall a. SaturatingArithmetic a -> a
+runSat (SaturatingArithmetic a) = a
 
 instance modularArithmeticUInt8Semiring :: Semiring (ModularArithmetic UInt8) where
   add (ModularArithmetic (UInt8 a)) (ModularArithmetic (UInt8 b)) = ModularArithmetic $ fromInt $ a + b
   zero = ModularArithmetic $ fromInt 0
   mul (ModularArithmetic (UInt8 a)) (ModularArithmetic (UInt8 b)) = ModularArithmetic $ fromInt $ a * b
   one = ModularArithmetic $ fromInt 1
+
+instance saturatingArithmeticUInt8Semiring :: Semiring (SaturatingArithmetic UInt8) where
+  add (SaturatingArithmetic (UInt8 a)) (SaturatingArithmetic (UInt8 b)) = SaturatingArithmetic $ clamp $ a + b
+  zero = SaturatingArithmetic $ clamp 0
+  mul (SaturatingArithmetic (UInt8 a)) (SaturatingArithmetic (UInt8 b)) = SaturatingArithmetic $ clamp $ a * b
+  one = SaturatingArithmetic $ clamp 1
 
 
 class Bytes a where
@@ -103,7 +118,9 @@ main = do
   log (show $ (top :: UInt32))
   log (show $ (compare (bottom :: UInt32) (top :: UInt32)))
   log (show $ (toBytes (top :: UInt32)))
-  log (show <<< getOperand $ (ModularArithmetic (fromInt 200) * ModularArithmetic (fromInt 50)))
+  log (show <<< runMod $ (ModularArithmetic (fromInt 200) * ModularArithmetic (fromInt 50)))
+  log (show <<< runSat $ (SaturatingArithmetic (clamp 127) * SaturatingArithmetic (clamp 2)))
+  log (show <<< runSat $ (SaturatingArithmetic (clamp 200) * SaturatingArithmetic (clamp 2)))
   -- log (show $ (top :: UInt32))
   -- log (show $ (top :: UInt64))
   -- log (show $ (top :: UInt128))
