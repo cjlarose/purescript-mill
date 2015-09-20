@@ -28,7 +28,7 @@ instance uInt8Ord :: Ord UInt8 where
 instance uInt8Eq :: Eq UInt8 where
   eq (UInt8 a) (UInt8 b) = eq a b
 
--- instance uInt8BoundedOrd :: BoundedOrd UInt8 where
+instance uInt8BoundedOrd :: BoundedOrd UInt8 where
 
 newtype ModularArithmetic a = ModularArithmetic a
 
