@@ -62,6 +62,13 @@ bytesToBigInt x = foldl f (BigInt.fromInt 0) (toBytes x) where
   shiftL8 = (*) (BigInt.fromInt 256)
   f acc (UInt8 byte) = (shiftL8 acc) + (BigInt.fromInt byte)
 
+splitBigInt :: Int -> BigInt.BigInt -> (Tuple BigInt.BigInt BigInt.BigInt)
+splitBigInt byteWidth x = (Tuple hi lo) where
+  bitWidth = BigInt.fromInt $ 8 * byteWidth
+  hi = x / (BigInt.pow (BigInt.fromInt 2) bitWidth)
+  mask = (BigInt.pow (BigInt.fromInt 2) bitWidth)
+  lo = x `mod` mask
+
 instance uInt8Bytes :: Bytes UInt8 where
   toBytes = pure
 
@@ -96,6 +103,7 @@ instance largeKeyBytes :: (Bytes a, Bytes b) => Bytes (LargeKey a b) where
 
 type UInt16 = LargeKey UInt8 UInt8
 type UInt32 = LargeKey UInt16 UInt16
+type UInt64 = LargeKey UInt32 UInt32
 
 -- addLists :: List Int -> List Int -> (Tuple Boolean (List Int))
 -- addLists xs ys = (foldr f (Tuple false Nil) (zip xs ys)) where
@@ -132,6 +140,9 @@ main = do
   log (show <<< bytesToBigInt $ (top :: UInt16))
   log (show <<< toBytes $ (top :: UInt32))
   log (show <<< bytesToBigInt $ (top :: UInt32))
+  log (show <<< splitBigInt 1 <<< bytesToBigInt $ (top :: UInt16))
+  log (show <<< splitBigInt 2 <<< bytesToBigInt $ (top :: UInt32))
+  log (show <<< splitBigInt 4 <<< bytesToBigInt $ (top :: UInt64))
   -- log (show $ (top :: UInt32))
   -- log (show $ (top :: UInt64))
   -- log (show $ (top :: UInt128))
