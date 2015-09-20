@@ -55,7 +55,7 @@ instance saturatingArithmeticUInt8Semiring :: Semiring (SaturatingArithmetic UIn
   one = SaturatingArithmetic $ clamp 1
 
 
-class Bytes a where
+class (BoundedOrd a) <= Bytes a where
   toBytes :: a -> List UInt8
   fromBigInt :: BigInt.BigInt -> a
 
@@ -88,7 +88,7 @@ instance largeKeyOrd :: (Ord a, Ord b) => Ord (LargeKey a b) where
 
 instance largeKeyBoundedOrd :: (BoundedOrd a, BoundedOrd b) => BoundedOrd (LargeKey a b) where
 
-instance largeKeyBytes :: (Bytes a, Bytes b, Bounded a, Bounded b) => Bytes (LargeKey a b) where
+instance largeKeyBytes :: (Bytes a, Bytes b) => Bytes (LargeKey a b) where
   toBytes (LargeKey a b) = (toBytes a) ++ (toBytes b)
   fromBigInt x = (LargeKey hi lo) where
     shiftAmount = bytesToBigInt (top :: b) + BigInt.fromInt 1
