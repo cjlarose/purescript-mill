@@ -2,10 +2,10 @@ module Main where
 
 import Control.Monad.Eff.Console
 import Prelude
-import Data.Foldable (foldr)
+import Data.Foldable (foldr, foldl)
 import Data.List
 import Data.Tuple
-import Data.BigInt
+import qualified Data.BigInt as BigInt
 
 data UInt8 = UInt8 Int
 
@@ -56,6 +56,11 @@ instance saturatingArithmeticUInt8Semiring :: Semiring (SaturatingArithmetic UIn
 
 class Bytes a where
   toBytes :: a -> List UInt8
+
+bytesToBigInt :: forall b. (Bytes b) => b -> BigInt.BigInt
+bytesToBigInt x = foldl f (BigInt.fromInt 0) (toBytes x) where
+  shiftL8 = (*) (BigInt.fromInt 256)
+  f acc (UInt8 byte) = (shiftL8 acc) + (BigInt.fromInt byte)
 
 instance uInt8Bytes :: Bytes UInt8 where
   toBytes = pure
@@ -122,6 +127,11 @@ main = do
   log (show <<< runMod $ (ModularArithmetic (intToByte 200) * ModularArithmetic (intToByte 50)))
   log (show <<< runSat $ (SaturatingArithmetic (clamp 127) * SaturatingArithmetic (clamp 2)))
   log (show <<< runSat $ (SaturatingArithmetic (clamp 200) * SaturatingArithmetic (clamp 2)))
+  log (show <<< bytesToBigInt $ (top :: UInt8))
+  log (show <<< toBytes $ (top :: UInt16))
+  log (show <<< bytesToBigInt $ (top :: UInt16))
+  log (show <<< toBytes $ (top :: UInt32))
+  log (show <<< bytesToBigInt $ (top :: UInt32))
   -- log (show $ (top :: UInt32))
   -- log (show $ (top :: UInt64))
   -- log (show $ (top :: UInt128))
