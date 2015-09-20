@@ -64,24 +64,11 @@ bytesToBigInt x = foldl f (BigInt.fromInt 0) (toBytes x) where
   shiftL8 = (*) (BigInt.fromInt 256)
   f acc (UInt8 byte) = (shiftL8 acc) + (BigInt.fromInt byte)
 
-splitBigInt :: Int -> BigInt.BigInt -> (Tuple BigInt.BigInt BigInt.BigInt)
-splitBigInt byteWidth x = (Tuple hi lo) where
-  bitWidth = BigInt.fromInt $ 8 * byteWidth
-  hi = x / (BigInt.pow (BigInt.fromInt 2) bitWidth)
-  mask = (BigInt.pow (BigInt.fromInt 2) bitWidth)
-  lo = x `mod` mask
-
 instance uInt8Bytes :: Bytes UInt8 where
   toBytes = pure
   fromBigInt x = UInt8 <<< floor <<< BigInt.toNumber $ x `mod` (BigInt.fromInt 256)
 
 data LargeKey a b = LargeKey a b
-
-hiHalf :: forall a b. LargeKey a b -> a
-hiHalf (LargeKey a _) = a
-
-loHalf :: forall a b. LargeKey a b -> b
-loHalf (LargeKey _ b) = b
 
 instance largeKeyEq :: (Eq a, Eq b) => Eq (LargeKey a b) where
   eq (LargeKey a b) (LargeKey c d) = a == c && b == d
@@ -112,18 +99,6 @@ type UInt16 = LargeKey UInt8 UInt8
 type UInt32 = LargeKey UInt16 UInt16
 type UInt64 = LargeKey UInt32 UInt32
 
--- addLists :: List Int -> List Int -> (Tuple Boolean (List Int))
--- addLists xs ys = (foldr f (Tuple false Nil) (zip xs ys)) where
---   f (Tuple x y) (Tuple carry prevSum) = (Tuple newCarry newSum) where
---     c = (if carry then 1 else 0)
---     sum = x + y + c
---     newSum = (sum `mod` 256) : prevSum
---     newCarry = (sum / 256) == 1
-  
-
--- addWithCarry :: forall b. (Bytes b) => b -> b -> (Tuple Boolean (List Int))
--- addWithCarry a b = addLists (toBytes a) (toBytes b)
-
 -- modulo
 -- saturating
 -- excepting
@@ -147,9 +122,6 @@ main = do
   log (show <<< bytesToBigInt $ (top :: UInt16))
   log (show <<< toBytes $ (top :: UInt32))
   log (show <<< bytesToBigInt $ (top :: UInt32))
-  log (show <<< splitBigInt 1 <<< bytesToBigInt $ (top :: UInt16))
-  log (show <<< splitBigInt 2 <<< bytesToBigInt $ (top :: UInt32))
-  log (show <<< splitBigInt 4 <<< bytesToBigInt $ (top :: UInt64))
   log (show <<< bytesToBigInt $ (top :: UInt32))
   log (show $ (fromBigInt <<< bytesToBigInt $ (top :: UInt16)) :: UInt32)
   -- log (show $ (top :: UInt32))
