@@ -3,7 +3,6 @@ module UnsignedInts
   , UInt16()
   , UInt32()
   , UInt64()
-  , clamp
   , intToByte
   , byteToInt
   ) where
@@ -18,10 +17,6 @@ byteToInt (UInt8 x) = x
 
 intToByte :: Int -> UInt8
 intToByte x = UInt8 (x `mod` 256)
-
-clamp :: Int -> UInt8
-clamp x = UInt8 val where
-  val = if x > 255 then 255 else x
 
 instance showUInt8 :: Show UInt8 where
   show (UInt8 x) = "UInt8 " ++ show x

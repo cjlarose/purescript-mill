@@ -4,7 +4,7 @@ import Control.Monad.Eff.Console
 import Prelude
 import qualified Data.BigInt as BigInt
 import ArithmeticContexts (ModularArithmetic(..), runMod, SaturatingArithmetic(..), runSat)
-import UnsignedInts (UInt8(), clamp, intToByte, UInt16(), UInt32())
+import UnsignedInts (UInt8(), intToByte, UInt16(), UInt32())
 import Bytes (bytesToBigInt, toBytes, fromBigInt)
 
 -- modulo
@@ -23,9 +23,9 @@ main = do
   log (show $ (compare (bottom :: UInt32) (top :: UInt32)))
   log (show $ (toBytes (top :: UInt32)))
   log (show <<< runMod $ (ModularArithmetic (intToByte 200) * ModularArithmetic (intToByte 50)))
-  log (show <<< runSat $ (SaturatingArithmetic (clamp 240) + SaturatingArithmetic (clamp 20)))
-  log (show <<< runSat $ (SaturatingArithmetic (clamp 127) * SaturatingArithmetic (clamp 2)))
-  log (show <<< runSat $ (SaturatingArithmetic (clamp 200) * SaturatingArithmetic (clamp 2)))
+  log (show <<< runSat $ (SaturatingArithmetic (intToByte 240) + SaturatingArithmetic (intToByte 20)))
+  log (show <<< runSat $ (SaturatingArithmetic (intToByte 127) * SaturatingArithmetic (intToByte 2)))
+  log (show <<< runSat $ (SaturatingArithmetic (intToByte 200) * SaturatingArithmetic (intToByte 2)))
   log (show <<< bytesToBigInt $ (top :: UInt8))
   log (show <<< toBytes $ (top :: UInt16))
   log (show <<< bytesToBigInt $ (top :: UInt16))

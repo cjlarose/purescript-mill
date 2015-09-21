@@ -3,6 +3,7 @@ module Bytes
   , fromBigInt
   , toBytes
   , bytesToBigInt
+  , clamp
   ) where
 
 import Prelude
@@ -21,6 +22,10 @@ bytesToBigInt :: forall b. (Bytes b) => b -> BigInt.BigInt
 bytesToBigInt x = foldl f (BigInt.fromInt 0) (toBytes x) where
   shiftL8 = (*) (BigInt.fromInt 256)
   f acc byte = (shiftL8 acc) + (BigInt.fromInt <<< byteToInt $ byte)
+
+clamp :: forall b. (Bytes b) => BigInt.BigInt -> b
+clamp x = fromBigInt (if x > limit then limit else x) where
+  limit = bytesToBigInt (top :: b)
 
 instance bytesUInt8 :: Bytes UInt8 where
   toBytes = pure
