@@ -29,10 +29,10 @@ instance bytesUInt8 :: Bytes UInt8 where
 
 instance bytesLargeKey :: (Bytes a, Bytes b) => Bytes (LargeKey a b) where
   toBigInt (LargeKey a b) = hi + lo where
-    shiftAmount = toBigInt (top :: b) + BigInt.fromInt 1
+    shiftAmount = toBigInt (top :: b) + (one :: BigInt.BigInt)
     hi = shiftAmount * (toBigInt a)
     lo = toBigInt b
   fromBigInt x = (LargeKey hi lo) where
-    shiftAmount = toBigInt (top :: b) + BigInt.fromInt 1
+    shiftAmount = toBigInt (top :: b) + (one:: BigInt.BigInt)
     hi = fromBigInt $ x `div` shiftAmount
     lo = fromBigInt $ x `mod` shiftAmount
