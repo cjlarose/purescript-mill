@@ -35,6 +35,8 @@ main = do
   log (show $ (fromBigInt <<< bytesToBigInt $ (top :: UInt16)) :: UInt32)
   log (show <<< runMod $ (ModularArithmetic ((fromBigInt (BigInt.fromInt 5)) :: UInt16)) * (ModularArithmetic (fromBigInt (BigInt.fromInt 600))))
   log (show <<< runMod $ (ModularArithmetic ((fromBigInt (BigInt.fromInt 110)) :: UInt16)) * (ModularArithmetic (fromBigInt (BigInt.fromInt 600))))
+  log (show <<< runMod $ (ModularArithmetic (top :: UInt32)) + (ModularArithmetic (fromBigInt (BigInt.fromInt 2))))
+  log (show <<< runSat $ (SaturatingArithmetic (top :: UInt32)) + (SaturatingArithmetic (fromBigInt (BigInt.fromInt 2))))
   -- log (show $ (top :: UInt32))
   -- log (show $ (top :: UInt64))
   -- log (show $ (top :: UInt128))
