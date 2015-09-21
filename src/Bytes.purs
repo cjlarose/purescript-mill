@@ -22,14 +22,13 @@ bytesToBigInt x = foldl f (BigInt.fromInt 0) (toBytes x) where
   shiftL8 = (*) (BigInt.fromInt 256)
   f acc byte = (shiftL8 acc) + (BigInt.fromInt <<< byteToInt $ byte)
 
-instance uInt8Bytes :: Bytes UInt8 where
+instance bytesUInt8 :: Bytes UInt8 where
   toBytes = pure
   fromBigInt x = intToByte <<< floor <<< BigInt.toNumber $ x `mod` (BigInt.fromInt 256)
 
-instance largeKeyBytes :: (Bytes a, Bytes b) => Bytes (LargeKey a b) where
+instance bytesLargeKey :: (Bytes a, Bytes b) => Bytes (LargeKey a b) where
   toBytes (LargeKey a b) = (toBytes a) ++ (toBytes b)
   fromBigInt x = (LargeKey hi lo) where
     shiftAmount = bytesToBigInt (top :: b) + BigInt.fromInt 1
     hi = fromBigInt $ x `div` shiftAmount
     lo = fromBigInt $ x `mod` shiftAmount
-
