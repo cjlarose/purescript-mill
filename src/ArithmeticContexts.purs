@@ -8,7 +8,7 @@ module ArithmeticContexts
 import Prelude
 import qualified Data.BigInt as BigInt
 import UnsignedInts (UInt8(), intToByte, byteToInt)
-import Bytes (Bytes, fromBigInt, bytesToBigInt, clamp)
+import Bytes (Bytes, fromBigInt, toBigInt, clamp)
 import LargeKey (LargeKey(..))
 
 newtype ModularArithmetic a = ModularArithmetic a
@@ -54,13 +54,13 @@ instance semiringSaturatingArithmeticUInt8 :: Semiring (SaturatingArithmetic UIn
   one = pure <<< intToByte $ 1
 
 instance semiringModularArithmeticLargeKey :: (Bytes a, Bytes b, Semiring (ModularArithmetic a), Semiring (ModularArithmetic b)) => Semiring (ModularArithmetic (LargeKey a b)) where
-  add x y = fromBigInt <$> ((+) <$> (bytesToBigInt <$> x) <*> (bytesToBigInt <$> y))
+  add x y = fromBigInt <$> ((+) <$> (toBigInt <$> x) <*> (toBigInt <$> y))
   zero = pure $ LargeKey (runMod (zero :: ModularArithmetic a)) (runMod (zero :: ModularArithmetic b))
-  mul x y = fromBigInt <$> ((*) <$> (bytesToBigInt <$> x) <*> (bytesToBigInt <$> y))
+  mul x y = fromBigInt <$> ((*) <$> (toBigInt <$> x) <*> (toBigInt <$> y))
   one = pure $ LargeKey (runMod (zero :: ModularArithmetic a)) (runMod (one :: ModularArithmetic b))
 
 instance semiringSaturatingArithmeticLargeKey :: (Bytes a, Bytes b, Semiring (SaturatingArithmetic a), Semiring (SaturatingArithmetic b)) => Semiring (SaturatingArithmetic (LargeKey a b)) where
-  add x y = clamp <$> ((+) <$> (bytesToBigInt <$> x) <*> (bytesToBigInt <$> y))
+  add x y = clamp <$> ((+) <$> (toBigInt <$> x) <*> (toBigInt <$> y))
   zero = pure $ LargeKey (runSat (zero :: SaturatingArithmetic a)) (runSat (zero :: SaturatingArithmetic b))
-  mul x y = clamp <$> ((*) <$> (bytesToBigInt <$> x) <*> (bytesToBigInt <$> y))
+  mul x y = clamp <$> ((*) <$> (toBigInt <$> x) <*> (toBigInt <$> y))
   one = pure $ LargeKey (runSat (zero :: SaturatingArithmetic a)) (runSat (one :: SaturatingArithmetic b))
