@@ -95,6 +95,12 @@ instance largeKeyBytes :: (Bytes a, Bytes b) => Bytes (LargeKey a b) where
     hi = fromBigInt $ x `div` shiftAmount
     lo = fromBigInt $ x `mod` shiftAmount
 
+instance modularArithmetricLargeKeySemiring :: (Bytes a, Bytes b, Semiring (ModularArithmetic a), Semiring (ModularArithmetic b)) => Semiring (ModularArithmetic (LargeKey a b)) where
+  add (ModularArithmetic x) (ModularArithmetic y) = ModularArithmetic <<< fromBigInt $ (bytesToBigInt x) + (bytesToBigInt y)
+  zero = ModularArithmetic (LargeKey (runMod (zero :: ModularArithmetic a)) (runMod (zero :: ModularArithmetic b)))
+  mul (ModularArithmetic x) (ModularArithmetic y) = ModularArithmetic <<< fromBigInt $ (bytesToBigInt x) * (bytesToBigInt y)
+  one = ModularArithmetic (LargeKey (runMod (zero :: ModularArithmetic a)) (runMod (one :: ModularArithmetic b)))
+
 type UInt16 = LargeKey UInt8 UInt8
 type UInt32 = LargeKey UInt16 UInt16
 type UInt64 = LargeKey UInt32 UInt32
@@ -124,6 +130,8 @@ main = do
   log (show <<< bytesToBigInt $ (top :: UInt32))
   log (show <<< bytesToBigInt $ (top :: UInt32))
   log (show $ (fromBigInt <<< bytesToBigInt $ (top :: UInt16)) :: UInt32)
+  log (show <<< runMod $ (ModularArithmetic ((fromBigInt (BigInt.fromInt 5)) :: UInt16)) * (ModularArithmetic (fromBigInt (BigInt.fromInt 600))))
+  log (show <<< runMod $ (ModularArithmetic ((fromBigInt (BigInt.fromInt 110)) :: UInt16)) * (ModularArithmetic (fromBigInt (BigInt.fromInt 600))))
   -- log (show $ (top :: UInt32))
   -- log (show $ (top :: UInt64))
   -- log (show $ (top :: UInt128))
