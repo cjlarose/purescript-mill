@@ -23,6 +23,7 @@ main = do
   log (show $ (compare (bottom :: UInt32) (top :: UInt32)))
   log (show $ (toBytes (top :: UInt32)))
   log (show <<< runMod $ (ModularArithmetic (intToByte 200) * ModularArithmetic (intToByte 50)))
+  log (show <<< runSat $ (SaturatingArithmetic (clamp 240) + SaturatingArithmetic (clamp 20)))
   log (show <<< runSat $ (SaturatingArithmetic (clamp 127) * SaturatingArithmetic (clamp 2)))
   log (show <<< runSat $ (SaturatingArithmetic (clamp 200) * SaturatingArithmetic (clamp 2)))
   log (show <<< bytesToBigInt $ (top :: UInt8))
