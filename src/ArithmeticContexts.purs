@@ -55,12 +55,12 @@ instance semiringSaturatingArithmeticUInt8 :: Semiring (SaturatingArithmetic UIn
 
 instance semiringModularArithmeticLargeKey :: (Bytes a, Bytes b, Semiring (ModularArithmetic a), Semiring (ModularArithmetic b)) => Semiring (ModularArithmetic (LargeKey a b)) where
   add x y = fromBigInt <$> ((+) <$> (toBigInt <$> x) <*> (toBigInt <$> y))
-  zero = pure $ LargeKey (runMod (zero :: ModularArithmetic a)) (runMod (zero :: ModularArithmetic b))
+  zero = pure <<< fromBigInt $ zero :: BigInt.BigInt
   mul x y = fromBigInt <$> ((*) <$> (toBigInt <$> x) <*> (toBigInt <$> y))
-  one = pure $ LargeKey (runMod (zero :: ModularArithmetic a)) (runMod (one :: ModularArithmetic b))
+  one = pure <<< fromBigInt $ one :: BigInt.BigInt
 
 instance semiringSaturatingArithmeticLargeKey :: (Bytes a, Bytes b, Semiring (SaturatingArithmetic a), Semiring (SaturatingArithmetic b)) => Semiring (SaturatingArithmetic (LargeKey a b)) where
   add x y = clamp <$> ((+) <$> (toBigInt <$> x) <*> (toBigInt <$> y))
-  zero = pure $ LargeKey (runSat (zero :: SaturatingArithmetic a)) (runSat (zero :: SaturatingArithmetic b))
+  zero = pure <<< fromBigInt $ zero :: BigInt.BigInt
   mul x y = clamp <$> ((*) <$> (toBigInt <$> x) <*> (toBigInt <$> y))
-  one = pure $ LargeKey (runSat (zero :: SaturatingArithmetic a)) (runSat (one :: SaturatingArithmetic b))
+  one = pure <<< fromBigInt $ one :: BigInt.BigInt
