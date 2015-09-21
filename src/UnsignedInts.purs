@@ -36,3 +36,4 @@ instance boundedOrdUInt8 :: BoundedOrd UInt8 where
 type UInt16 = LargeKey UInt8 UInt8
 type UInt32 = LargeKey UInt16 UInt16
 type UInt64 = LargeKey UInt32 UInt32
+type UInt128 = LargeKey UInt64 UInt64
