@@ -2,6 +2,7 @@ module Bytes
   ( Bytes
   , fromBigInt
   , toBigInt
+  , fromBytes
   , clamp
   ) where
 
@@ -14,6 +15,9 @@ import LargeKey (LargeKey(..))
 class (BoundedOrd a) <= Bytes a where
   toBigInt :: a -> BigInt.BigInt
   fromBigInt :: BigInt.BigInt -> a
+
+fromBytes :: forall a b. (Bytes a, Bytes b) => a -> b
+fromBytes = fromBigInt <<< toBigInt
 
 clamp :: forall b. (Bytes b) => BigInt.BigInt -> b
 clamp x = fromBigInt (if x > limit then limit else x) where
