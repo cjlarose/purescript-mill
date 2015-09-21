@@ -5,7 +5,7 @@ import Prelude
 import Data.Tuple
 import qualified Data.BigInt as BigInt
 import ArithmeticContexts (ModularArithmetic(..), runMod, SaturatingArithmetic(..), runSat)
-import UnsignedInts (UInt8(..), clamp, intToByte, UInt16(), UInt32())
+import UnsignedInts (UInt8(), clamp, intToByte, UInt16(), UInt32())
 import Bytes (bytesToBigInt, toBytes, fromBigInt)
 
 -- modulo

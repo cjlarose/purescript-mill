@@ -1,16 +1,20 @@
 module UnsignedInts
-  ( UInt8(..)
+  ( UInt8()
   , UInt16()
   , UInt32()
   , UInt64()
   , clamp
   , intToByte
+  , byteToInt
   ) where
 
 import Prelude
 import LargeKey (LargeKey(..))
 
 data UInt8 = UInt8 Int
+
+byteToInt :: UInt8 -> Int
+byteToInt (UInt8 x) = x
 
 intToByte :: Int -> UInt8
 intToByte x = UInt8 (x `mod` 256)

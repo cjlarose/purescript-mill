@@ -6,7 +6,7 @@ module ArithmeticContexts
   ) where
 
 import Prelude
-import UnsignedInts (UInt8(..), clamp, intToByte)
+import UnsignedInts (UInt8(), clamp, intToByte, byteToInt)
 import Bytes (Bytes, fromBigInt, bytesToBigInt)
 import LargeKey (LargeKey(..))
 
@@ -21,15 +21,15 @@ runSat :: forall a. SaturatingArithmetic a -> a
 runSat (SaturatingArithmetic a) = a
 
 instance modularArithmeticUInt8Semiring :: Semiring (ModularArithmetic UInt8) where
-  add (ModularArithmetic (UInt8 a)) (ModularArithmetic (UInt8 b)) = ModularArithmetic $ intToByte $ a + b
+  add (ModularArithmetic a) (ModularArithmetic b) = ModularArithmetic $ intToByte $ (byteToInt a) + (byteToInt b)
   zero = ModularArithmetic $ intToByte 0
-  mul (ModularArithmetic (UInt8 a)) (ModularArithmetic (UInt8 b)) = ModularArithmetic $ intToByte $ a * b
+  mul (ModularArithmetic a) (ModularArithmetic b) = ModularArithmetic $ intToByte $ (byteToInt a) * (byteToInt b)
   one = ModularArithmetic $ intToByte 1
 
 instance saturatingArithmeticUInt8Semiring :: Semiring (SaturatingArithmetic UInt8) where
-  add (SaturatingArithmetic (UInt8 a)) (SaturatingArithmetic (UInt8 b)) = SaturatingArithmetic $ clamp $ a + b
+  add (SaturatingArithmetic a) (SaturatingArithmetic b) = SaturatingArithmetic $ clamp $ (byteToInt a) + (byteToInt b)
   zero = SaturatingArithmetic $ clamp 0
-  mul (SaturatingArithmetic (UInt8 a)) (SaturatingArithmetic (UInt8 b)) = SaturatingArithmetic $ clamp $ a * b
+  mul (SaturatingArithmetic a) (SaturatingArithmetic b) = SaturatingArithmetic $ clamp $ (byteToInt a) * (byteToInt b)
   one = SaturatingArithmetic $ clamp 1
 
 instance modularArithmetricLargeKeySemiring :: (Bytes a, Bytes b, Semiring (ModularArithmetic a), Semiring (ModularArithmetic b)) => Semiring (ModularArithmetic (LargeKey a b)) where
