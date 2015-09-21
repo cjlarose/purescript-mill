@@ -5,13 +5,8 @@ import Prelude
 import Data.Tuple
 import qualified Data.BigInt as BigInt
 import ArithmeticContexts (ModularArithmetic(..), runMod, SaturatingArithmetic(..), runSat)
-import UnsignedInts (UInt8(..), clamp, intToByte)
+import UnsignedInts (UInt8(..), clamp, intToByte, UInt16(), UInt32())
 import Bytes (bytesToBigInt, toBytes, fromBigInt)
-import LargeKey (LargeKey(..))
-
-type UInt16 = LargeKey UInt8 UInt8
-type UInt32 = LargeKey UInt16 UInt16
-type UInt64 = LargeKey UInt32 UInt32
 
 -- modulo
 -- saturating

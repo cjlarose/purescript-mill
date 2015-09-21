@@ -1,10 +1,14 @@
 module UnsignedInts
   ( UInt8(..)
+  , UInt16()
+  , UInt32()
+  , UInt64()
   , clamp
   , intToByte
   ) where
 
 import Prelude
+import LargeKey (LargeKey(..))
 
 data UInt8 = UInt8 Int
 
@@ -29,3 +33,7 @@ instance uInt8Eq :: Eq UInt8 where
   eq (UInt8 a) (UInt8 b) = eq a b
 
 instance uInt8BoundedOrd :: BoundedOrd UInt8 where
+
+type UInt16 = LargeKey UInt8 UInt8
+type UInt32 = LargeKey UInt16 UInt16
+type UInt64 = LargeKey UInt32 UInt32
