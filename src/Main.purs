@@ -2,7 +2,6 @@ module Main where
 
 import Control.Monad.Eff.Console
 import Prelude
-import Data.Tuple
 import qualified Data.BigInt as BigInt
 import ArithmeticContexts (ModularArithmetic(..), runMod, SaturatingArithmetic(..), runSat)
 import UnsignedInts (UInt8(), clamp, intToByte, UInt16(), UInt32())
