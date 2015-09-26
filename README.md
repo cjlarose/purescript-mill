@@ -35,7 +35,7 @@ For the unsigned integer domain, the following operations can be implemented (fo
   * [ ] [rootu](http://millcomputing.com/wiki/Instruction_Set/rootu)
   * [ ] [rrootu](http://millcomputing.com/wiki/Instruction_Set/rrootu)
   * Modulo
-    * [ ] [add1u](http://millcomputing.com/wiki/Instruction_Set/add1u)
+    * [x] [add1u](http://millcomputing.com/wiki/Instruction_Set/add1u)
     * [ ] [sub1u](http://millcomputing.com/wiki/Instruction_Set/sub1u)
     * [x] [addu](http://millcomputing.com/wiki/Instruction_Set/addu)
     * [ ] [subus](http://millcomputing.com/wiki/Instruction_Set/subus)
