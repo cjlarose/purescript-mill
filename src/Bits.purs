@@ -51,7 +51,7 @@ instance bitsUInt8 :: Bits UInt8 where
   xor a b = intToByte $ IntBits.(.^.) (byteToInt a) (byteToInt b)
   complement = intToByte <<< IntBits.complement <<< byteToInt
   shift x n | n > 0 = intToByte $ IntBits.zshr (byteToInt x) n
-            | n < 0 = intToByte $ IntBits.shl (byteToInt x) n
+            | n < 0 = intToByte $ IntBits.shl (byteToInt x) (- n)
             | otherwise = x
   rotate x n = intToByte masked where
     ix = (byteToInt x)
