@@ -57,7 +57,7 @@ instance bitsUInt8 :: Bits UInt8 where
     ix = (byteToInt x)
     repeated = IntBits.(.|.) (IntBits.shl ix 8) ix
     shifted = IntBits.zshr repeated (n `mod` 8)
-    masked = IntBits.(.|.) shifted 0xFF
+    masked = IntBits.(.&.) shifted 0xFF
   testBit x n = IntBits.(.&.) shifted 1 == 1 where
     shifted = IntBits.zshr (byteToInt x) n
   popCount = unsafeIndex popCountLookupTable <<< byteToInt
