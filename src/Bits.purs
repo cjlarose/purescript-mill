@@ -17,8 +17,13 @@ module Bits
 import Prelude
 import Data.Array ((..))
 import Data.Array.Unsafe (unsafeIndex)
+import qualified Data.BigInt as BigInt
 import qualified Data.Int.Bits as IntBits
+
 import UnsignedInts (UInt8(), intToByte, byteToInt)
+import Bytes (Bytes, toBigInt, fromBigInt)
+import LargeKey (LargeKey(..))
+import qualified Data.BigInt.Bits as BigIntBits
 
 class (Eq a) <= Bits a where
   and :: a -> a -> a
@@ -61,3 +66,21 @@ instance bitsUInt8 :: Bits UInt8 where
   testBit x n = IntBits.(.&.) shifted 1 == 1 where
     shifted = IntBits.zshr (byteToInt x) n
   popCount = unsafeIndex popCountLookupTable <<< byteToInt
+
+instance bitsLargeKey :: (Bits a, Bits b, Bytes a, Bytes b, Bytes (LargeKey a b)) => Bits (LargeKey a b) where
+  and x y = fromBigInt $ BigIntBits.(.&.) (toBigInt x) (toBigInt y)
+  or x y = fromBigInt $ BigIntBits.(.|.) (toBigInt x) (toBigInt y)
+  xor x y = fromBigInt $ BigIntBits.(.^.) (toBigInt x) (toBigInt y)
+  complement = fromBigInt <<< BigIntBits.complement <<< toBigInt
+  shift x n = fromBigInt $ BigIntBits.shiftRight (toBigInt x) n
+  rotate x n = fromBigInt masked where
+    bigx = (toBigInt x)
+    mask = toBigInt $ top `asTypeOf` x
+    shiftAmount = mask + (one :: BigInt.BigInt)
+    repeated = BigIntBits.(.|.) (shiftAmount * bigx) bigx
+    shifted = BigIntBits.shiftRight repeated n
+    masked = BigIntBits.(.&.) shifted mask
+  testBit x n = (shifted BigIntBits..&. one) == one where
+    one = BigInt.fromInt 1
+    shifted = BigIntBits.shiftRight (toBigInt x) n
+  popCount (LargeKey a b) = popCount a + popCount b
