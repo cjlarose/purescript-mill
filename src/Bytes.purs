@@ -36,3 +36,10 @@ instance bytesLargeKey :: (Bytes a, Bytes b) => Bytes (LargeKey a b) where
     shiftAmount = toBigInt (top :: b) + (one:: BigInt.BigInt)
     hi = fromBigInt $ x `div` shiftAmount
     lo = fromBigInt $ x `mod` shiftAmount
+
+-- Default Semiring instance is for modular arithmetic
+instance semiringBytes :: (Bytes a) => Semiring a where
+  add x y = fromBigInt <$> ((+) <$> (toBigInt <$> x) <*> (toBigInt <$> y))
+  zero = pure <<< fromBigInt $ zero :: BigInt.BigInt
+  mul x y = fromBigInt <$> ((*) <$> (toBigInt <$> x) <*> (toBigInt <$> y))
+  one = pure <<< fromBigInt $ one :: BigInt.BigInt

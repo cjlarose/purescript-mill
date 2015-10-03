@@ -3,7 +3,7 @@ module Main where
 import Control.Monad.Eff.Console
 import Prelude
 import qualified Data.BigInt as BigInt
-import ArithmeticContexts (ModularArithmetic(..), runMod, SaturatingArithmetic(..), runSat)
+import ArithmeticContexts (SaturatingArithmetic(..), runSat)
 import UnsignedInts (UInt8(), intToByte, UInt16(), UInt32())
 import Bytes (toBigInt, fromBigInt, fromBytes)
 
@@ -22,7 +22,7 @@ main = do
   log (show $ (top :: UInt32))
   log (show $ (compare (bottom :: UInt32) (top :: UInt32)))
   log (show $ (toBigInt (top :: UInt32)))
-  log (show <<< runMod $ (ModularArithmetic (intToByte 200) * ModularArithmetic (intToByte 50)))
+  log (show $ (intToByte 200) * (intToByte 50))
   log (show <<< runSat $ (SaturatingArithmetic (intToByte 240) + SaturatingArithmetic (intToByte 20)))
   log (show <<< runSat $ (SaturatingArithmetic (intToByte 127) * SaturatingArithmetic (intToByte 2)))
   log (show <<< runSat $ (SaturatingArithmetic (intToByte 200) * SaturatingArithmetic (intToByte 2)))
@@ -31,9 +31,9 @@ main = do
   log (show <<< toBigInt $ (top :: UInt32))
   log (show $ (fromBytes (top :: UInt16)) :: UInt32)
   log (show $ (fromBytes (top :: UInt32)) :: UInt16)
-  log (show <<< runMod $ (ModularArithmetic ((fromBigInt (BigInt.fromInt 5)) :: UInt16)) * (ModularArithmetic (fromBigInt (BigInt.fromInt 600))))
-  log (show <<< runMod $ (ModularArithmetic ((fromBigInt (BigInt.fromInt 110)) :: UInt16)) * (ModularArithmetic (fromBigInt (BigInt.fromInt 600))))
-  log (show <<< runMod $ (ModularArithmetic (top :: UInt32)) + (ModularArithmetic (fromBigInt (BigInt.fromInt 2))))
+  log (show $ (fromBigInt (BigInt.fromInt 5) :: UInt16) * (fromBigInt (BigInt.fromInt 600)))
+  log (show $ (fromBigInt (BigInt.fromInt 110) :: UInt16) * (fromBigInt (BigInt.fromInt 600)))
+  log (show $ (top :: UInt32) + (fromBigInt (BigInt.fromInt 2)))
   log (show <<< runSat $ (SaturatingArithmetic (top :: UInt32)) + (SaturatingArithmetic (fromBigInt (BigInt.fromInt 2))))
   -- log (show $ (top :: UInt32))
   -- log (show $ (top :: UInt64))
