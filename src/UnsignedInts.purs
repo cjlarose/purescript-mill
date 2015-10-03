@@ -9,6 +9,7 @@ module UnsignedInts
 
 import Prelude
 import LargeKey (LargeKey(..))
+import Data.Int.Bits ((.&.))
 
 data UInt8 = UInt8 Int
 
@@ -16,7 +17,7 @@ byteToInt :: UInt8 -> Int
 byteToInt (UInt8 x) = x
 
 intToByte :: Int -> UInt8
-intToByte x = UInt8 (x `mod` 256)
+intToByte x = UInt8 (x .&. 0xFF)
 
 instance showUInt8 :: Show UInt8 where
   show (UInt8 x) = "UInt8 " ++ show x
