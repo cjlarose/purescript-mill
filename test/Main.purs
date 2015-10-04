@@ -63,10 +63,33 @@ boundedOrdLaws = do
   -- ordering
   quickCheck \a -> bottom <= a :: UInt8 && a <= top
 
+booleanAlgebraLaws = do
+  -- associativity
+  quickCheck \a b c -> a :: UInt8 || (b || c) === (a || b) || c
+  quickCheck \a b c -> a :: UInt8 && (b && c) === (a && b) && c
+  -- commutativity
+  quickCheck \a b -> a :: UInt8 || b === b || a
+  quickCheck \a b -> a :: UInt8 && b === b && a
+  -- distributivity
+  quickCheck \a b c -> a :: UInt8 && (b || c) === a && b || a && c
+  quickCheck \a b c -> a :: UInt8 || (b && c) === (a || b) && (a || c)
+  -- idempotence
+  quickCheck \a -> a :: UInt8 || a === a
+  quickCheck \a -> a :: UInt8 && a === a
+  -- absorption
+  quickCheck \a b -> a :: UInt8 || (a && b) === a
+  quickCheck \a b -> a :: UInt8 && (a || b) === a
+  -- annihilation
+  quickCheck \a -> a :: UInt8 || top === top
+  --- complementation
+  quickCheck \a -> a :: UInt8 && (not a) === bottom
+  quickCheck \a -> a :: UInt8 || (not a) === top
+
 main = do
   eqLaws
   ordLaws
   boundedOrdLaws
+  booleanAlgebraLaws
   modularArithmetic
   saturatingArithmetic
   --- bytes laws tests (composition of toBigInt and fromBigInt)

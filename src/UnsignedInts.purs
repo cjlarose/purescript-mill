@@ -8,9 +8,9 @@ module UnsignedInts
   ) where
 
 import Prelude
-import Data.Int.Bits ((.&.))
-import LargeKey (LargeKey(..))
+import Data.Int.Bits ((.&.), (.|.), complement)
 import Test.QuickCheck.Arbitrary (arbitrary, Arbitrary)
+import LargeKey (LargeKey(..))
 
 data UInt8 = UInt8 Int
 
@@ -37,6 +37,11 @@ instance boundedOrdUInt8 :: BoundedOrd UInt8 where
 
 instance arbitraryUInt8 :: Arbitrary UInt8 where
   arbitrary = intToByte <$> arbitrary
+
+instance booleanAlgrebraUInt8 :: BooleanAlgebra UInt8 where
+  conj a b = intToByte $ (byteToInt a) .&. (byteToInt b)
+  disj a b = intToByte $ (byteToInt a) .|. (byteToInt b)
+  not = intToByte <<< complement <<< byteToInt
 
 type UInt16 = LargeKey UInt8 UInt8
 type UInt32 = LargeKey UInt16 UInt16
