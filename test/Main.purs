@@ -59,9 +59,15 @@ ordLaws = do
   -- transitivity
   quickCheck \a b c -> (a :: UInt8 <= b && b <= c) .=>. a <= c
 
+boundedOrdLaws = do
+  -- ordering
+  quickCheck \a -> bottom <= a :: UInt8 && a <= top
+
 main = do
   eqLaws
   ordLaws
+  boundedOrdLaws
   modularArithmetic
   saturatingArithmetic
   --- bytes laws tests (composition of toBigInt and fromBigInt)
+  --- boolean algrebra laws tests
