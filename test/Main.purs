@@ -6,7 +6,7 @@ import Prelude
 import ArithmeticContexts (ModularArithmetic(..), SaturatingArithmetic(..))
 import UnsignedInts (intToByte, UInt8())
 
-main = do
+modularArithmetic = do
   -- modular addition of UInt8 forms a communtative monoid
   quickCheck \a b c -> (a :: ModularArithmetic UInt8 + b) + c === a + (b + c)
   quickCheck \a -> (a :: ModularArithmetic UInt8) + zero === zero + a
@@ -22,3 +22,6 @@ main = do
   -- annihilation
   quickCheck \a -> (a :: ModularArithmetic UInt8) * zero === zero * a
   quickCheck \a -> (a :: ModularArithmetic UInt8) * zero === zero
+
+main = do
+  modularArithmetic
