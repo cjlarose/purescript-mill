@@ -30,11 +30,20 @@ instance applyModularArithmetic :: Apply ModularArithmetic where
 instance applicativeModularArithmetic :: Applicative ModularArithmetic where
   pure = ModularArithmetic
 
+instance arbitraryModularArithmeticBytes :: (Arbitrary a) => Arbitrary (ModularArithmetic a) where
+  arbitrary = pure <$> arbitrary
+
 
 newtype SaturatingArithmetic a = SaturatingArithmetic a
 
 runSat :: forall a. SaturatingArithmetic a -> a
 runSat (SaturatingArithmetic a) = a
+
+instance eqSaturatingArithmetic :: (Eq a) => Eq (SaturatingArithmetic  a) where
+  eq (SaturatingArithmetic x) (SaturatingArithmetic y) = eq x y
+
+instance showSaturatingArithmetic :: (Show a) => Show (SaturatingArithmetic a) where
+  show (SaturatingArithmetic x) = "SaturatingArithmetic " ++ show x
 
 instance functorSaturatingArithmetic :: Functor SaturatingArithmetic where
   map f (SaturatingArithmetic a) = SaturatingArithmetic (f a)
@@ -44,6 +53,9 @@ instance applySaturatingArithmetic :: Apply SaturatingArithmetic where
 
 instance applicativeSaturatingArithmetic :: Applicative SaturatingArithmetic where
   pure = SaturatingArithmetic
+
+instance arbitrarySaturatingArithmeticBytes :: (Arbitrary a) => Arbitrary (SaturatingArithmetic a) where
+  arbitrary = pure <$> arbitrary
 
 
 instance semiringModularArithmeticBytes :: (Bytes a) => Semiring (ModularArithmetic a) where
@@ -57,6 +69,3 @@ instance semiringSaturatingArithmeticBytes :: (Bytes a) => Semiring (SaturatingA
   zero = pure <<< fromBigInt $ zero :: BigInt.BigInt
   mul x y = clamp <$> ((*) <$> (toBigInt <$> x) <*> (toBigInt <$> y))
   one = pure <<< fromBigInt $ one :: BigInt.BigInt
-
-instance arbitraryModularArithmeticBytes :: (Arbitrary a) => Arbitrary (ModularArithmetic a) where
-  arbitrary = pure <$> arbitrary
