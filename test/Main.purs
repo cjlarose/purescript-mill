@@ -51,8 +51,17 @@ eqLaws = do
   -- transitivity
   quickCheck \a b c -> ((eq (a :: UInt8) b) && eq b c) .=>. (eq a c)
 
+ordLaws = do
+  -- reflexivity
+  quickCheck \a -> (a :: UInt8) <= a
+  -- antisymmetry
+  quickCheck \a b -> (a :: UInt8 <= b && b <= a) .=>. a == b
+  -- transitivity
+  quickCheck \a b c -> (a :: UInt8 <= b && b <= c) .=>. a <= c
+
 main = do
   eqLaws
+  ordLaws
   modularArithmetic
   saturatingArithmetic
   --- bytes laws tests (composition of toBigInt and fromBigInt)
