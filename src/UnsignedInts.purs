@@ -8,8 +8,9 @@ module UnsignedInts
   ) where
 
 import Prelude
-import LargeKey (LargeKey(..))
 import Data.Int.Bits ((.&.))
+import LargeKey (LargeKey(..))
+import Test.QuickCheck.Arbitrary (arbitrary, Arbitrary)
 
 data UInt8 = UInt8 Int
 
@@ -33,6 +34,9 @@ instance eqUInt8 :: Eq UInt8 where
   eq (UInt8 a) (UInt8 b) = eq a b
 
 instance boundedOrdUInt8 :: BoundedOrd UInt8 where
+
+instance arbitraryUInt8 :: Arbitrary UInt8 where
+  arbitrary = intToByte <$> arbitrary
 
 type UInt16 = LargeKey UInt8 UInt8
 type UInt32 = LargeKey UInt16 UInt16
