@@ -6,6 +6,9 @@ import Prelude
 import ArithmeticContexts (ModularArithmetic(..), SaturatingArithmetic(..))
 import UnsignedInts (intToByte, UInt8())
 
+(.=>.) :: forall a. (BooleanAlgebra a) => a -> a -> a
+(.=>.) p q  = (not p) || q
+
 modularArithmetic = do
   -- modular addition of UInt8 forms a communtative monoid
   quickCheck \a b c -> (a :: ModularArithmetic UInt8 + b) + c === a + (b + c)
@@ -40,6 +43,16 @@ saturatingArithmetic = do
   quickCheck \a -> (a :: SaturatingArithmetic UInt8) * zero === zero * a
   quickCheck \a -> (a :: SaturatingArithmetic UInt8) * zero === zero
 
+eqLaws = do
+  -- reflexivity
+  quickCheck \a -> (a :: UInt8) === a
+  -- symmetry
+  quickCheck \a b -> eq (a :: UInt8) b === eq b a
+  -- transitivity
+  quickCheck \a b c -> ((eq (a :: UInt8) b) && eq b c) .=>. (eq a c)
+
 main = do
+  eqLaws
   modularArithmetic
   saturatingArithmetic
+  --- bytes laws tests (composition of toBigInt and fromBigInt)
