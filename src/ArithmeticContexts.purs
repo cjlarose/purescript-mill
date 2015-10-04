@@ -8,11 +8,18 @@ module ArithmeticContexts
 import Prelude
 import qualified Data.BigInt as BigInt
 import Bytes (Bytes, fromBigInt, toBigInt, clamp)
+import Test.QuickCheck.Arbitrary (arbitrary, Arbitrary)
 
 newtype ModularArithmetic a = ModularArithmetic a
 
 runMod :: forall a. ModularArithmetic a -> a
 runMod (ModularArithmetic a) = a
+
+instance eqModularArithmetic :: (Eq a) => Eq (ModularArithmetic  a) where
+  eq (ModularArithmetic x) (ModularArithmetic y) = eq x y
+
+instance showModularArithmetic :: (Show a) => Show (ModularArithmetic a) where
+  show (ModularArithmetic x) = "ModularArithmetic " ++ show x
 
 instance functorModularArithmetic :: Functor ModularArithmetic where
   map f (ModularArithmetic a) = ModularArithmetic (f a)
@@ -50,3 +57,6 @@ instance semiringSaturatingArithmeticBytes :: (Bytes a) => Semiring (SaturatingA
   zero = pure <<< fromBigInt $ zero :: BigInt.BigInt
   mul x y = clamp <$> ((*) <$> (toBigInt <$> x) <*> (toBigInt <$> y))
   one = pure <<< fromBigInt $ one :: BigInt.BigInt
+
+instance arbitraryModularArithmeticBytes :: (Arbitrary a) => Arbitrary (ModularArithmetic a) where
+  arbitrary = pure <$> arbitrary
