@@ -6,6 +6,7 @@ import Prelude
 import qualified Data.BigInt as BigInt
 import qualified Data.BigInt.Bits as BigIntBits
 import Bytes (Bytes, toBigInt, fromBigInt)
+import Bits (Bits, popCount)
 
 data LargeKey a b = LargeKey a b
 
@@ -41,3 +42,18 @@ instance bytesLargeKey :: (Bytes a, Bytes b) => Bytes (LargeKey a b) where
     shiftAmount = toBigInt (top :: b) + (one:: BigInt.BigInt)
     hi = fromBigInt $ x `div` shiftAmount
     lo = fromBigInt $ x `mod` shiftAmount
+
+instance bitsLargeKey :: (Bits a, Bits b, Bytes a, Bytes b, Bytes (LargeKey a b)) => Bits (LargeKey a b) where
+  xor x y = fromBigInt $ BigIntBits.(.^.) (toBigInt x) (toBigInt y)
+  shift x n = fromBigInt $ BigIntBits.shiftRight (toBigInt x) n
+  rotate x n = fromBigInt masked where
+    bigx = (toBigInt x)
+    mask = toBigInt $ top `asTypeOf` x
+    shiftAmount = mask + (one :: BigInt.BigInt)
+    repeated = BigIntBits.(.|.) (shiftAmount * bigx) bigx
+    shifted = BigIntBits.shiftRight repeated n
+    masked = BigIntBits.(.&.) shifted mask
+  testBit x n = (shifted BigIntBits..&. one) == one where
+    one = BigInt.fromInt 1
+    shifted = BigIntBits.shiftRight (toBigInt x) n
+  popCount (LargeKey a b) = popCount a + popCount b
