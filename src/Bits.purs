@@ -1,12 +1,7 @@
 module Bits
   ( Bits
-  , and
-  , (.&.)
-  , or
-  , (.|.)
   , xor
   , (.^.)
-  , complement
   , shift
   , rotate
   , testBit
@@ -26,20 +21,11 @@ import LargeKey (LargeKey(..))
 import qualified Data.BigInt.Bits as BigIntBits
 
 class (Eq a) <= Bits a where
-  and :: a -> a -> a
-  or :: a -> a -> a
   xor :: a -> a -> a
-  complement :: a -> a
   shift :: a -> Int -> a
   rotate :: a -> Int -> a
   testBit :: a -> Int -> Boolean
   popCount :: a -> Int
-
-(.&.) :: forall a. (Bits a) => a -> a -> a
-(.&.) = and
-
-(.|.) :: forall a. (Bits a) => a -> a -> a
-(.|.) = or
 
 (.^.) :: forall a. (Bits a) => a -> a -> a
 (.^.) = xor
@@ -51,10 +37,7 @@ popCountLookupTable = map countBits (0 .. 255) where
   countBits x = countNibble `unsafeIndex` (IntBits.zshr x 4) + countNibble `unsafeIndex` (IntBits.(.&.) x 0x0F)
 
 instance bitsUInt8 :: Bits UInt8 where
-  and a b = intToByte $ IntBits.(.&.) (byteToInt a) (byteToInt b)
-  or a b = intToByte $ IntBits.(.|.) (byteToInt a) (byteToInt b)
   xor a b = intToByte $ IntBits.(.^.) (byteToInt a) (byteToInt b)
-  complement = intToByte <<< IntBits.complement <<< byteToInt
   shift x n | n > 0 = intToByte $ IntBits.zshr (byteToInt x) n
             | n < 0 = intToByte $ IntBits.shl (byteToInt x) (- n)
             | otherwise = x
@@ -68,10 +51,7 @@ instance bitsUInt8 :: Bits UInt8 where
   popCount = unsafeIndex popCountLookupTable <<< byteToInt
 
 instance bitsLargeKey :: (Bits a, Bits b, Bytes a, Bytes b, Bytes (LargeKey a b)) => Bits (LargeKey a b) where
-  and x y = fromBigInt $ BigIntBits.(.&.) (toBigInt x) (toBigInt y)
-  or x y = fromBigInt $ BigIntBits.(.|.) (toBigInt x) (toBigInt y)
   xor x y = fromBigInt $ BigIntBits.(.^.) (toBigInt x) (toBigInt y)
-  complement = fromBigInt <<< BigIntBits.complement <<< toBigInt
   shift x n = fromBigInt $ BigIntBits.shiftRight (toBigInt x) n
   rotate x n = fromBigInt masked where
     bigx = (toBigInt x)
