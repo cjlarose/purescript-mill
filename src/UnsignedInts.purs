@@ -8,8 +8,11 @@ module UnsignedInts
   ) where
 
 import Prelude
+import Data.Int (floor)
 import Data.Int.Bits ((.&.), (.|.), complement)
+import qualified Data.BigInt as BigInt
 import Test.QuickCheck.Arbitrary (arbitrary, Arbitrary)
+import Bytes (Bytes, toBigInt, fromBigInt)
 import LargeKey (LargeKey(..))
 
 data UInt8 = UInt8 Int
@@ -42,6 +45,10 @@ instance booleanAlgrebraUInt8 :: BooleanAlgebra UInt8 where
   conj a b = intToByte $ (byteToInt a) .&. (byteToInt b)
   disj a b = intToByte $ (byteToInt a) .|. (byteToInt b)
   not = intToByte <<< complement <<< byteToInt
+
+instance bytesUInt8 :: Bytes UInt8 where
+  toBigInt = BigInt.fromInt <<< byteToInt
+  fromBigInt x = intToByte <<< floor <<< BigInt.toNumber $ x `mod` (BigInt.fromInt 256)
 
 type UInt16 = LargeKey UInt8 UInt8
 type UInt32 = LargeKey UInt16 UInt16
