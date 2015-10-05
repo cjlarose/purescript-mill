@@ -115,4 +115,3 @@ main = do
   modularArithmetic
   saturatingArithmetic
   --- integral laws tests (composition of toBigInt and fromBigInt)
-  --- boolean algrebra laws tests
