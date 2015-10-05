@@ -114,5 +114,5 @@ main = do
   bitsLaws
   modularArithmetic
   saturatingArithmetic
-  --- bytes laws tests (composition of toBigInt and fromBigInt)
+  --- integral laws tests (composition of toBigInt and fromBigInt)
   --- boolean algrebra laws tests

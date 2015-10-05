@@ -5,7 +5,7 @@ import Prelude
 import qualified Data.BigInt as BigInt
 import ArithmeticContexts (ModularArithmetic(..), runMod, SaturatingArithmetic(..), runSat)
 import UnsignedInts (UInt8(), intToByte, UInt16(), UInt32())
-import Bytes (toBigInt, fromBigInt, fromBytes)
+import Integral (toBigInt, fromBigInt, fromIntegral)
 
 -- modulo
 -- saturating
@@ -29,8 +29,8 @@ main = do
   log (show <<< toBigInt $ (top :: UInt8))
   log (show <<< toBigInt $ (top :: UInt16))
   log (show <<< toBigInt $ (top :: UInt32))
-  log (show $ (fromBytes (top :: UInt16)) :: UInt32)
-  log (show $ (fromBytes (top :: UInt32)) :: UInt16)
+  log (show $ (fromIntegral (top :: UInt16)) :: UInt32)
+  log (show $ (fromIntegral (top :: UInt32)) :: UInt16)
   log (show <<< runMod $ (ModularArithmetic ((fromBigInt (BigInt.fromInt 5)) :: UInt16)) * (ModularArithmetic (fromBigInt (BigInt.fromInt 600))))
   log (show <<< runMod $ (ModularArithmetic ((fromBigInt (BigInt.fromInt 110)) :: UInt16)) * (ModularArithmetic (fromBigInt (BigInt.fromInt 600))))
   log (show <<< runMod $ (ModularArithmetic (top :: UInt32)) + (ModularArithmetic (fromBigInt (BigInt.fromInt 2))))

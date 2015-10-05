@@ -5,7 +5,7 @@ module LargeKey
 import Prelude
 import qualified Data.BigInt as BigInt
 import qualified Data.BigInt.Bits as BigIntBits
-import Bytes (Bytes, toBigInt, fromBigInt)
+import Integral (Integral, toBigInt, fromBigInt)
 import Bits (Bits, popCount)
 
 data LargeKey a b = LargeKey a b
@@ -28,12 +28,12 @@ instance ordLargeKey :: (Ord a, Ord b) => Ord (LargeKey a b) where
 
 instance boundedOrdLargeKey :: (BoundedOrd a, BoundedOrd b) => BoundedOrd (LargeKey a b) where
 
-instance booleanAlgebraLargeKey :: (Bytes a, Bytes b, BooleanAlgebra a, BooleanAlgebra b) => BooleanAlgebra (LargeKey a b) where
+instance booleanAlgebraLargeKey :: (Integral a, Integral b, BooleanAlgebra a, BooleanAlgebra b) => BooleanAlgebra (LargeKey a b) where
   conj x y = fromBigInt $ BigIntBits.(.&.) (toBigInt x) (toBigInt y)
   disj x y = fromBigInt $ BigIntBits.(.|.) (toBigInt x) (toBigInt y)
   not = fromBigInt <<< BigIntBits.complement <<< toBigInt
 
-instance bytesLargeKey :: (Bytes a, Bytes b) => Bytes (LargeKey a b) where
+instance integralLargeKey :: (Integral a, Integral b) => Integral (LargeKey a b) where
   toBigInt (LargeKey x y) = hi + lo where
     shiftAmount = toBigInt (top :: b) + (one :: BigInt.BigInt)
     hi = shiftAmount * (toBigInt x)
@@ -43,7 +43,7 @@ instance bytesLargeKey :: (Bytes a, Bytes b) => Bytes (LargeKey a b) where
     hi = fromBigInt $ x `div` shiftAmount
     lo = fromBigInt $ x `mod` shiftAmount
 
-instance bitsLargeKey :: (Bits a, Bits b, Bytes a, Bytes b, Bytes (LargeKey a b)) => Bits (LargeKey a b) where
+instance bitsLargeKey :: (Bits a, Bits b, Integral a, Integral b, Integral (LargeKey a b)) => Bits (LargeKey a b) where
   xor x y = fromBigInt $ BigIntBits.(.^.) (toBigInt x) (toBigInt y)
   shift x n = fromBigInt $ BigIntBits.shiftRight (toBigInt x) n
   rotate x n = fromBigInt masked where

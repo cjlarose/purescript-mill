@@ -7,7 +7,7 @@ module ArithmeticContexts
 
 import Prelude
 import qualified Data.BigInt as BigInt
-import Bytes (Bytes, fromBigInt, toBigInt, clamp)
+import Integral (Integral, fromBigInt, toBigInt, clamp)
 import Test.QuickCheck.Arbitrary (arbitrary, Arbitrary)
 
 newtype ModularArithmetic a = ModularArithmetic a
@@ -30,7 +30,7 @@ instance applyModularArithmetic :: Apply ModularArithmetic where
 instance applicativeModularArithmetic :: Applicative ModularArithmetic where
   pure = ModularArithmetic
 
-instance arbitraryModularArithmeticBytes :: (Arbitrary a) => Arbitrary (ModularArithmetic a) where
+instance arbitraryModularArithmetic :: (Arbitrary a) => Arbitrary (ModularArithmetic a) where
   arbitrary = pure <$> arbitrary
 
 
@@ -54,17 +54,17 @@ instance applySaturatingArithmetic :: Apply SaturatingArithmetic where
 instance applicativeSaturatingArithmetic :: Applicative SaturatingArithmetic where
   pure = SaturatingArithmetic
 
-instance arbitrarySaturatingArithmeticBytes :: (Arbitrary a) => Arbitrary (SaturatingArithmetic a) where
+instance arbitrarySaturatingArithmetic:: (Arbitrary a) => Arbitrary (SaturatingArithmetic a) where
   arbitrary = pure <$> arbitrary
 
 
-instance semiringModularArithmeticBytes :: (Bytes a) => Semiring (ModularArithmetic a) where
+instance semiringModularArithmetic :: (Integral a) => Semiring (ModularArithmetic a) where
   add x y = fromBigInt <$> ((+) <$> (toBigInt <$> x) <*> (toBigInt <$> y))
   zero = pure <<< fromBigInt $ zero :: BigInt.BigInt
   mul x y = fromBigInt <$> ((*) <$> (toBigInt <$> x) <*> (toBigInt <$> y))
   one = pure <<< fromBigInt $ one :: BigInt.BigInt
 
-instance semiringSaturatingArithmeticBytes :: (Bytes a) => Semiring (SaturatingArithmetic a) where
+instance semiringSaturatingArithmetic :: (Integral a) => Semiring (SaturatingArithmetic a) where
   add x y = clamp <$> ((+) <$> (toBigInt <$> x) <*> (toBigInt <$> y))
   zero = pure <<< fromBigInt $ zero :: BigInt.BigInt
   mul x y = clamp <$> ((*) <$> (toBigInt <$> x) <*> (toBigInt <$> y))

@@ -16,7 +16,7 @@ import qualified Data.BigInt as BigInt
 import Test.QuickCheck.Arbitrary (arbitrary, Arbitrary)
 import qualified Data.Int.Bits as IntBits
 
-import Bytes (Bytes, toBigInt, fromBigInt)
+import Integral (Integral, toBigInt, fromBigInt)
 import Bits (Bits)
 import LargeKey (LargeKey(..))
 
@@ -51,7 +51,7 @@ instance booleanAlgrebraUInt8 :: BooleanAlgebra UInt8 where
   disj a b = intToByte $ (byteToInt a) .|. (byteToInt b)
   not = intToByte <<< complement <<< byteToInt
 
-instance bytesUInt8 :: Bytes UInt8 where
+instance integralUInt8 :: Integral UInt8 where
   toBigInt = BigInt.fromInt <<< byteToInt
   fromBigInt x = intToByte <<< floor <<< BigInt.toNumber $ x `mod` (BigInt.fromInt 256)
 
