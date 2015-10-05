@@ -10,8 +10,7 @@ module Bits
 
 import Prelude
 
--- | `Bits` represents a finite sequence of 0s and 1s. In addition to the laws
--- | of BooleanAlgebra, instances of `Bits` must satify the following laws:
+-- | `Bits` represents a finite sequence of 0s and 1s. In addition to the laws of BooleanAlgebra, instances of `Bits` must satify the following laws:
 -- |
 -- | * `x .^. y == (x || y) && (not (x && y))`
 class (Eq a, BooleanAlgebra a) <= Bits a where
