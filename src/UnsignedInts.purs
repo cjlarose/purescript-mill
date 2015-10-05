@@ -3,6 +3,7 @@ module UnsignedInts
   , UInt16()
   , UInt32()
   , UInt64()
+  , UInt128()
   , intToByte
   , byteToInt
   ) where

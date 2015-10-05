@@ -49,4 +49,10 @@ type UInt32 = LargeKey UInt16 UInt16
 type UInt64 = LargeKey UInt32 UInt32
 ```
 
+#### `UInt128`
+
+``` purescript
+type UInt128 = LargeKey UInt64 UInt64
+```
+
 
