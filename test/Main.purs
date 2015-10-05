@@ -5,6 +5,7 @@ import Test.QuickCheck (quickCheck, (===))
 import Prelude
 import ArithmeticContexts (ModularArithmetic(..), SaturatingArithmetic(..))
 import UnsignedInts (intToByte, UInt8())
+import Bits ((.^.))
 
 (.=>.) :: forall a. (BooleanAlgebra a) => a -> a -> a
 (.=>.) p q  = (not p) || q
@@ -85,11 +86,16 @@ booleanAlgebraLaws = do
   quickCheck \a -> a :: UInt8 && (not a) === bottom
   quickCheck \a -> a :: UInt8 || (not a) === top
 
+bitsLaws = do
+  -- xor law
+  quickCheck \a b -> (a :: UInt8 .^. b) === (a || b) && (not (a && b))
+
 main = do
   eqLaws
   ordLaws
   boundedOrdLaws
   booleanAlgebraLaws
+  bitsLaws
   modularArithmetic
   saturatingArithmetic
   --- bytes laws tests (composition of toBigInt and fromBigInt)
