@@ -6,6 +6,7 @@ import Prelude
 import ArithmeticContexts (ModularArithmetic(..), SaturatingArithmetic(..))
 import UnsignedInts (intToByte, UInt8())
 import Bits ((.^.))
+import Integral (fromBigInt, toBigInt)
 
 (.=>.) :: forall a. (BooleanAlgebra a) => a -> a -> a
 (.=>.) p q  = (not p) || q
@@ -106,12 +107,17 @@ bitsLaws = do
   log "xor law"
   quickCheck \a b -> (a :: UInt8 .^. b) === (a || b) && (not (a && b))
 
+integralLaws = do
+  log "integral laws"
+  quickCheck \a -> fromBigInt <<< toBigInt $ (a :: UInt8) === a
+
 main = do
   eqLaws
   ordLaws
   boundedOrdLaws
   booleanAlgebraLaws
   bitsLaws
+  integralLaws
   modularArithmetic
   saturatingArithmetic
   --- integral laws tests (composition of toBigInt and fromBigInt)
