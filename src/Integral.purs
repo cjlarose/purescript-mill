@@ -9,6 +9,11 @@ module Integral
 import Prelude
 import qualified Data.BigInt as BigInt
 
+-- | `Integral` represents integers.
+-- |
+-- | In addition to satifying the laws of `BoundedOrd`, instances of `Integral` should satisfy the following law:
+-- |
+-- | `fromBigInt (toBigInt x) == x`
 class (BoundedOrd a) <= Integral a where
   toBigInt :: a -> BigInt.BigInt
   fromBigInt :: BigInt.BigInt -> a
