@@ -20,7 +20,7 @@ import Bytes (Bytes, toBigInt, fromBigInt)
 import LargeKey (LargeKey(..))
 import qualified Data.BigInt.Bits as BigIntBits
 
-class (Eq a) <= Bits a where
+class (Eq a, BooleanAlgebra a) <= Bits a where
   xor :: a -> a -> a
   shift :: a -> Int -> a
   rotate :: a -> Int -> a
