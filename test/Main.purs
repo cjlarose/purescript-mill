@@ -11,6 +11,9 @@ import Integral (fromBigInt, toBigInt)
 (.=>.) :: forall a. (BooleanAlgebra a) => a -> a -> a
 (.=>.) p q  = (not p) || q
 
+(.<=>.) :: forall a. (BooleanAlgebra a) => a -> a -> a
+(.<=>.) p q  = (p .=>. q) && (q .=>. p)
+
 modularArithmetic = do
   log "modular addition of UInt8 forms a communtative monoid"
   quickCheck \a b c -> (a :: ModularArithmetic UInt8 + b) + c === a + (b + c)
@@ -71,6 +74,10 @@ ordLaws = do
   log "transitivity"
   quickCheck \a b c -> (a :: UInt8 <= b && b <= c) .=>. a <= c
 
+strictTotalOrderingLaws = do
+  log "trichotomy"
+  quickCheck \a b -> (a :: UInt8 < b) .<=>. ((a <= b) && (a /= b))
+
 boundedOrdLaws = do
   log "ordering"
   quickCheck \a -> bottom <= a :: UInt8 && a <= top
@@ -114,6 +121,7 @@ integralLaws = do
 main = do
   eqLaws
   ordLaws
+  strictTotalOrderingLaws
   boundedOrdLaws
   booleanAlgebraLaws
   bitsLaws
